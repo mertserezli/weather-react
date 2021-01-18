@@ -8,11 +8,18 @@ const api = {
     base: "https://api.openweathermap.org/data/2.5/weather?q="
 };
 
+interface weather{
+    main: {temp: number} | undefined;
+    name: string;
+    sys: {country: string}
+    weather: Array<{main:string}>
+}
+
 function App() {
     const [query, setQuery] = useState('');
-    const [weather, setWeather] = useState({});
+    const [weather, setWeather] = useState<weather>({main:undefined, name:"", sys:{country:""}, weather:[{main:""}]});
 
-    const search = evt => {
+    const search = (evt:React.KeyboardEvent<HTMLDivElement>) => {
         if (evt.key === "Enter") {
             fetch(`${api.base}${query}&units=metric&APPID=${api.key}`)
                 .then(res => res.json())
