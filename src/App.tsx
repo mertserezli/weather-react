@@ -1,5 +1,6 @@
 import './App.css';
 import React, {useState} from "react";
+import Results from "./results"
 
 require('dotenv').config();
 
@@ -26,7 +27,6 @@ function App() {
                 .then(result => {
                     setWeather(result);
                     setQuery('');
-                    console.log(result);
                 });
         }
     };
@@ -46,18 +46,7 @@ function App() {
                     />
                 </div>
                 {(typeof weather.main != "undefined") ? (
-                <div data-testid="results">
-                    <div className="location-box">
-                        <div className="location" data-testid="location">{weather.name}, {weather.sys.country}</div>
-                        <div className="date" data-testid="date">{new Date().toDateString()}</div>
-                    </div>
-                    <div className="weather-box">
-                        <div className="temp" data-testid="temp">
-                            {Math.round(weather.main.temp)}°c
-                        </div>
-                        <div className="weather" data-testid="weather">{weather.weather[0].main}</div>
-                    </div>
-                </div>
+                <Results name={weather.name} countryCode={weather.sys.country} temp={weather.main.temp} weather={weather.weather[0].main}/>
                 ) : ('')}
             </main>
         </div>
