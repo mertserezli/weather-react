@@ -13,7 +13,7 @@ test('can change search input', () => {
   const { getByTestId } = render(<App />);
   const searchBar = getByTestId('search-bar');
   fireEvent.change(searchBar, { target: { value: 'istanbul' } });
-  expect(searchBar.value).toBe('istanbul');
+  expect((searchBar as HTMLInputElement).value).toBe('istanbul');
 });
 
 test('can do search', async () => {
