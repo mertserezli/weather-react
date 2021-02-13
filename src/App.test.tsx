@@ -39,3 +39,16 @@ test('search returns', async () => {
   });
 
 });
+
+test('shows error', async () => {
+  const { getByTestId, getByText } = render(<App />);
+  const searchBar = getByTestId('search-bar');
+  fireEvent.change(searchBar, { target: { value: 'Asdsa' } });
+  fireEvent.focus(searchBar);
+  fireEvent.keyPress(searchBar, { key: "Enter", code: 13, charCode: 13 });
+
+  await waitFor(()=> {
+    expect(getByText("Error city not found")).toBeInTheDocument();
+  });
+
+});

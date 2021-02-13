@@ -19,6 +19,7 @@ interface weather{
 function App() {
     const [query, setQuery] = useState('');
     const [weather, setWeather] = useState<weather>({main:undefined, name:"", sys:{country:""}, weather:[{main:""}]});
+    const [error, setError] = useState(false);
 
     const search = (evt:React.KeyboardEvent<HTMLDivElement>) => {
         if (evt.key === "Enter") {
@@ -26,6 +27,7 @@ function App() {
                 .then(res => res.json())
                 .then(result => {
                     setWeather(result);
+                    setError(result.message === "city not found");
                     setQuery('');
                 });
         }
@@ -48,6 +50,12 @@ function App() {
                 {(typeof weather.main != "undefined") ? (
                 <Results name={weather.name} countryCode={weather.sys.country} temp={weather.main.temp} weather={weather.weather[0].main}/>
                 ) : ('')}
+                {error &&
+                <div data-testid="results">
+                    <div className="location-box">
+                    <div className="location" data-testid="location">Error city not found</div>
+                    </div>
+                </div>}
             </main>
         </div>
     );
