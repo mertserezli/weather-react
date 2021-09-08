@@ -2,6 +2,8 @@ import './App.css';
 import React, {useState} from "react";
 import Results from "./results"
 
+import IF from "./IfComponent"
+
 require('dotenv').config();
 
 const api = {
@@ -10,7 +12,7 @@ const api = {
 };
 
 interface weather{
-    main: {temp: number} | undefined;
+    main: {temp: number};
     name: string;
     sys: {country: string}
     weather: Array<{main:string}>
@@ -18,7 +20,7 @@ interface weather{
 
 function App() {
     const [query, setQuery] = useState('');
-    const [weather, setWeather] = useState<weather>({main:undefined, name:"", sys:{country:""}, weather:[{main:""}]});
+    const [weather, setWeather] = useState<weather>({main:{temp:0}, name:"", sys:{country:""}, weather:[{main:""}]});
     const [error, setError] = useState(false);
 
     const search = (evt:React.KeyboardEvent<HTMLDivElement>) => {
@@ -26,8 +28,13 @@ function App() {
             fetch(`${api.base}${query}&units=metric&APPID=${api.key}`)
                 .then(res => res.json())
                 .then(result => {
-                    setWeather(result);
-                    setError(result.message === "city not found");
+                    if(result.message === "city not found") {
+                        setWeather({main: {temp: 0}, name: "", sys: {country: ""}, weather: [{main: ""}]});
+                        setError(true);
+                    }else{
+                        setWeather(result);
+                        setError(false);
+                    }
                     setQuery('');
                 });
         }
@@ -47,15 +54,16 @@ function App() {
                         data-testid="search-bar"
                     />
                 </div>
-                {(typeof weather.main != "undefined") ? (
-                <Results name={weather.name} countryCode={weather.sys.country} temp={weather.main.temp} weather={weather.weather[0].main}/>
-                ) : ('')}
-                {error &&
-                <div data-testid="results">
-                    <div className="location-box">
-                    <div className="location" data-testid="location">Error city not found</div>
+                <IF condition={weather.name !== ""}>
+                    <Results name={weather.name} countryCode={weather.sys.country} temp={weather.main.temp} weather={weather.weather[0].main}/>
+                </IF>
+                <IF condition={error}>
+                    <div data-testid="results">
+                        <div className="location-box">
+                        <div className="location" data-testid="location">Error city not found</div>
+                        </div>
                     </div>
-                </div>}
+                </IF>
             </main>
         </div>
     );
