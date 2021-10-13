@@ -6,11 +6,6 @@ import IF from "./IfComponent"
 
 require('dotenv').config();
 
-const api = {
-    key: process.env.REACT_APP_WEATHER_API_KEY,
-    base: "https://api.openweathermap.org/data/2.5/weather?q="
-};
-
 interface weather{
     main: {temp: number};
     name: string;
@@ -25,7 +20,7 @@ function App() {
 
     const search = (evt:React.KeyboardEvent<HTMLDivElement>) => {
         if (evt.key === "Enter") {
-            fetch(`${api.base}${query}&units=metric&APPID=${api.key}`)
+            fetch(`https://weather-react-server.herokuapp.com/weather?query=${query}`)
                 .then(res => res.json())
                 .then(result => {
                     if(result.message === "city not found") {
